@@ -3,11 +3,6 @@ variable "name" {
   description = "The name of the key"
 }
 
-variable "stack" {
-  type        = string
-  description = "The stack name of the key"
-}
-
 variable "description" {
   type        = string
   description = "The description of the key as viewed in AWS console"

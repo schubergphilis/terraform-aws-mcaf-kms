@@ -1,9 +1,5 @@
-locals {
-  name = "${var.stack}-${var.name}"
-}
-
 resource "aws_kms_alias" "default" {
-  name          = local.name
+  name          = var.name
   target_key_id = aws_kms_key.default.key_id
 }
 
