@@ -1,9 +1,9 @@
-resource "aws_kms_alias" "default" {
+resource aws_kms_alias default {
   name          = "alias/${var.name}"
   target_key_id = aws_kms_key.default.key_id
 }
 
-resource "aws_kms_key" "default" {
+resource aws_kms_key default {
   description             = var.description
   policy                  = var.policy
   deletion_window_in_days = var.deletion_window_in_days
