@@ -4,10 +4,10 @@ resource "aws_kms_alias" "default" {
 }
 
 resource "aws_kms_key" "default" {
-  description             = var.description
-  policy                  = var.policy
   deletion_window_in_days = var.deletion_window_in_days
-  is_enabled              = true
+  description             = coalesce(var.description, var.name)
   enable_key_rotation     = var.enable_key_rotation
+  is_enabled              = true
+  policy                  = var.policy
   tags                    = var.tags
 }
