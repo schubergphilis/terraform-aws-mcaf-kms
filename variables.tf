@@ -6,6 +6,7 @@ variable "deletion_window_in_days" {
 
 variable "description" {
   type        = string
+  default     = null
   description = "The description of the key as viewed in AWS console"
 }
 
