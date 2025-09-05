@@ -23,7 +23,7 @@ variable "name" {
 
 variable "policy" {
   type        = string
-  default     = ""
+  default     = null
   description = "A valid KMS policy JSON document"
 }
 
