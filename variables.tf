@@ -27,6 +27,12 @@ variable "policy" {
   description = "A valid KMS policy JSON document"
 }
 
+variable "region" {
+  type        = string
+  default     = null
+  description = "The AWS region where resources will be created; if omitted the default provider region is used"
+}
+
 variable "tags" {
   type        = map(string)
   default     = {}
