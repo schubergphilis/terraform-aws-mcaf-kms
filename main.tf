@@ -1,16 +1,20 @@
 locals {
   account_id = data.aws_caller_identity.current.account_id
   partition  = data.aws_partition.current.partition
-  region     = var.region != null ? var.region : data.aws_region.current.region
 
-  # if no administrators are specified, include the current user to prevent key from getting unmanaged
+  # If no administrators are specified, fall back to the current caller so the key
+  # never ends up without a principal able to manage it.
   iam_administrator = coalescelist(var.default_policy.iam_arns_administrator, [data.aws_iam_session_context.current.issuer_arn])
+
+  # Use an explicit policy when provided, otherwise the generated default policy.
+  # When default_policy.enable is false and no explicit policy is set, the key is
+  # left unmanaged so AWS applies its built-in default key policy.
+  policy = var.default_policy.enable ? coalesce(var.policy, data.aws_iam_policy_document.kms_key_policy.json) : var.policy
 }
 
 data "aws_caller_identity" "current" {}
 data "aws_iam_session_context" "current" { arn = data.aws_caller_identity.current.arn }
 data "aws_partition" "current" {}
-data "aws_region" "current" {}
 
 ################################################################################
 # Key
@@ -32,7 +36,7 @@ resource "aws_kms_key" "default" {
   is_enabled               = true
   key_usage                = var.key_usage
   multi_region             = var.multi_region
-  policy                   = var.default_policy.enable ? coalesce(var.policy, data.aws_iam_policy_document.kms_key_policy.json) : var.policy
+  policy                   = local.policy
   xks_key_id               = var.xks_key_id
   tags                     = var.tags
 }
@@ -50,7 +54,7 @@ data "aws_iam_policy_document" "kms_key_policy" {
     sid       = "AllowRootAccount"
     actions   = ["kms:*"]
     effect    = "Allow"
-    resources = ["arn:${local.partition}:kms:${local.region}:${local.account_id}:key/*"]
+    resources = ["*"]
 
     condition {
       test     = "StringEquals"
@@ -118,7 +122,7 @@ data "aws_iam_policy_document" "kms_key_policy" {
 
       principals {
         type        = "AWS"
-        identifiers = var.default_policy.iam_arns_administrator
+        identifiers = local.iam_administrator
       }
     }
   }
