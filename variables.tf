@@ -55,6 +55,17 @@ variable "name" {
   description = "The name of the key"
 }
 
+variable "path" {
+  type        = string
+  default     = "/"
+  description = "Path of the KMS key alias"
+
+  validation {
+    condition     = length(regex("^(\\/|\\/.+\\/)$", var.path)) > 0
+    error_message = "The path must be '/' or start and end with '/' (e.g., '/custom/')."
+  }
+}
+
 variable "policy" {
   type        = string
   default     = null
