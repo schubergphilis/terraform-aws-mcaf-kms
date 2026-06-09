@@ -190,6 +190,35 @@ data "aws_iam_policy_document" "kms_key_policy" {
     }
   }
 
+  # Allow principals specified in iam_arns_service_grant to create, view, and revoke grants on the KMS key,
+  # but only when the grant operation request comes from an AWS service integrated with AWS KMS.
+  # https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html#key-policy-service-integration
+  dynamic "statement" {
+    for_each = length(var.default_policy.iam_arns_service_grant) > 0 ? [true] : []
+
+    content {
+      sid = "AllowServiceGrant"
+      actions = [
+        "kms:CreateGrant",
+        "kms:ListGrants",
+        "kms:RevokeGrant",
+      ]
+      effect    = "Allow"
+      resources = ["*"]
+
+      condition {
+        test     = "Bool"
+        variable = "kms:GrantIsForAWSResource"
+        values   = ["true"]
+      }
+
+      principals {
+        type        = "AWS"
+        identifiers = var.default_policy.iam_arns_service_grant
+      }
+    }
+  }
+
   # Allow principals specified in iam_arns_sign_verify to have permissions to use the KMS key for signing and verification operations.
   dynamic "statement" {
     for_each = length(var.default_policy.iam_arns_sign_verify) > 0 ? [true] : []

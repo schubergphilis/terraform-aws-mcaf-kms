@@ -83,6 +83,7 @@ variable "default_policy" {
     iam_arns_decrypt         = optional(list(string), [])
     iam_arns_decrypt_encrypt = optional(list(string), [])
     iam_arns_owner           = optional(list(string), [])
+    iam_arns_service_grant   = optional(list(string), [])
     iam_arns_sign_verify     = optional(list(string), [])
     iam_aws_config_read      = optional(bool, true)
   })
