@@ -61,6 +61,24 @@ variable "policy" {
   description = "A valid KMS policy JSON document"
 }
 
+variable "default_policy" {
+  type = object({
+    enable                    = optional(bool, true)
+    override_policy_documents = optional(list(string), [])
+    source_policy_documents   = optional(list(string), [])
+
+    iam_all_principals_read  = optional(bool, true)
+    iam_arns_administrator   = optional(list(string), [])
+    iam_arns_decrypt         = optional(list(string), [])
+    iam_arns_decrypt_encrypt = optional(list(string), [])
+    iam_arns_owner           = optional(list(string), [])
+    iam_arns_sign_verify     = optional(list(string), [])
+    iam_aws_config_read      = optional(bool, true)
+  })
+  default     = {}
+  description = "Configuration object for defining the KMS key policy and permissions"
+}
+
 variable "region" {
   type        = string
   default     = null
