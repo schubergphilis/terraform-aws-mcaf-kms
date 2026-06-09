@@ -76,7 +76,7 @@ variable "default_policy" {
     iam_aws_config_read      = optional(bool, true)
   })
   default     = {}
-  description = "Configuration object for defining the KMS key policy and permissions"
+  description = "Configuration object for defining the KMS key policy and permissions. Use `override_policy_documents` to add statements that override the default policy, or `source_policy_documents` to add statements that are merged with the default policy"
 }
 
 variable "region" {
