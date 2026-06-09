@@ -22,7 +22,7 @@ data "aws_partition" "current" {}
 
 resource "aws_kms_alias" "default" {
   region        = var.region
-  name          = "alias/${var.name}"
+  name          = "alias${var.path}${var.name}"
   target_key_id = aws_kms_key.default.key_id
 }
 
